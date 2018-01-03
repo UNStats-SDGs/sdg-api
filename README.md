@@ -1,6 +1,6 @@
 # Koop Provider for the UN SDG Project
 
-This Koop provider is designed for use with the UN SDG API (https://unstats.un.org/SDGAPI/swagger/#/) as the attribute base. The geometry is merged with data from a Hosted Feature service in ArcGIS Online.  This verision of the Koop connector supports the Quantization Paramaters to serve the geometry based on scale for high performance.  
+This Koop (https://github.com/koopjs/koop) provider is designed for use with the UN SDG API (https://unstats.un.org/SDGAPI/swagger/#/) as the attribute base. The geometry is merged with data from a Hosted Feature service in ArcGIS Online.  This verision of the Koop connector supports the Quantization Paramaters to serve the geometry based on scale for high performance.  
 
 If you want to write your own provider, simply fork this repository or copy the contents.
 
