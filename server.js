@@ -1,4 +1,5 @@
 require('dotenv').config();
+//var fs = require('fs');
 
 // clean shutdown on `cntrl + c`
 process.on('SIGINT', () => process.exit(0))
@@ -18,9 +19,13 @@ const parseRoutePath = require('./middleware/parseRoutePath.js');
 const githubDataSource = require('./middleware/githubDataSource.js');
 const seriesDataLoader = require('./middleware/seriesDataLoader.js');
 
+//var key = fs.readFileSync('encryption/private.key');
+//var cert = fs.readFileSync( 'encryption/primary.cer' );
+//var ca = fs.readFileSync( 'encryption/intermediate.crt' );
+
 const isNotFeatureServerRoute = function(path, middleware) {
   return function(req, res, next) {
-    if (req.path.indexOf('FeatureServer') !== -1) {
+      if (req.path.indexOf('FeatureServer') !== -1) {
       return next();
     } else {
       return middleware(req, res, next);

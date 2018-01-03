@@ -54,6 +54,7 @@ Model.prototype.getResourceRootJsonApi = function (req, callback) {
 }
 
 Model.prototype.getResourceJsonApi = function (req, callback) {
+  console.log("getResourceJsonApi")
   const data = req.rawData;
   const resource = translateToJSONAPI(req.rawDataType, req.query.sources, data);
   resource.meta = buildMeta(req, resource.data.length);
@@ -71,12 +72,13 @@ Model.prototype.getResourceJsonApi = function (req, callback) {
 }
 
 function singluarize(str) {
-  return str.substring(0, str.length - 1);
+  return 'serie'//str.substring(0, str.length - 1);
 }
 
 function translateToJSONAPI (type, sources, raw) {
+  console.log("translateToJSONAPI")
   // chop off the 's' for the type
-  const singularType = (type !== 'series') ? singluarize(type) : type;
+  const singularType = 'serie' //(type !== 'series') ? singluarize(type) : type;
 
   let data;
 
@@ -84,6 +86,7 @@ function translateToJSONAPI (type, sources, raw) {
     data = [];
 
     Object.keys(raw).forEach((key) => {
+      //console.log(key)
       data.push({
         id: raw[key].id,
         type: singularType,
@@ -177,18 +180,15 @@ function buildMeta (req, len) {
 
 Model.prototype.getData = function (req, callback) {
   const data = req.rawData;
-
-  // const resource = translate(data, {type: req.rawDataType});
-
-  callback(null, data);
+  const resource = data
+  callback(null, resource);
 }
 
 function translate (input, options) {
-  const type = (options.type !== 'series') ? singluarize(options.type) : options.type;
-
   return {
     type: 'FeatureCollection',
-    features: formatFeatures(input, type, options.geometry)
+    features:  input.features,
+    filtersApplied: {all: true}
   }
 }
 
@@ -197,15 +197,14 @@ function formatFeatures (raw, type, geometry) {
   let feature;
 
   if (raw.id === undefined) {
+    console.log('processing raw')
     Object.keys(raw).forEach((key) => {
       feature = {
-        type: 'Feature',
-        properties: getFeatureAttributes(raw[key], type)
+        "type": "Feature",
+        "id":  parseInt(raw[key].id),
+        "properties": raw[key].properties,
+        "geometry": raw[key].geometry
       };
-
-      if (geometry) {
-        feature.geometry = getFeatureGeometry(feature.properties.refarea);
-      }
 
       data.push( feature );
     });
@@ -221,8 +220,7 @@ function formatFeatures (raw, type, geometry) {
 
 function getFeatureAttributes (obj, type) {
   let atts = {
-    id: obj.id,
-    description: obj.description
+    id: obj.properties.id
   };
 
   if (type === 'goal') {
@@ -234,21 +232,15 @@ function getFeatureAttributes (obj, type) {
   } else if (type === 'indicator') {
     atts.goal_id = obj.goal_id;
     atts.target_id = obj.target_id;
-
-    // flatten sources
-    // obj.sources.forEach( (source) => {
-    //
-    // });
-
   } else if (type === 'series') {
-    atts.indicator_id = obj.indicator_id;
+    /*atts.indicator_id = obj.indicator_id;
     atts.target_id = obj.target_id;
     atts.goal_id = obj.goal_id;
     atts.is_official = obj.is_official;
-    atts.show = obj.show;
+    atts.show = obj.show;*/
   }
 
-  return Object.assign(atts, obj);
+  return obj.properties;// Object.assign(atts, obj);
 }
 
 /**
