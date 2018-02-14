@@ -48,7 +48,7 @@ function getSpatialData(req,res,next){
       Object.keys(req.query).forEach(function(key) {
         var val = req.query[key];
         //Append all the keys to the json (Excpect Format and callback)
-        if(key !== 'callback' && key !== 'where' && key !== 'f') //do not add callback as a parameter to the internal call
+        if(key !== 'callback' && key !== 'where' && key !== 'f' && key !== 'orderByFields') //do not add callback as a parameter to the internal call
           //Add Any addtional Query Parameters to the ArcGIS Online Call
           boundary_url += "&" + key + "=" + val
 
